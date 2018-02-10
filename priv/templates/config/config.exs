@@ -15,6 +15,6 @@ config :veil,Veil.Scheduler,
 
 config :veil, <%= web_module %>.Veil.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
-  api_key: "SG.your-api-key"
+  api_key: "your-api-key"
 
 # -- End Veil Configuration

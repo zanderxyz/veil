@@ -31,7 +31,7 @@ mix veil.add
 ```elixir
 config :veil, YourAppWeb.Veil.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
-  api_key: "SG.your-api-key"
+  api_key: "your-api-key"
 ```
 
 5. Launch your server and open http://localhost:4000/ in your browser.
@@ -63,7 +63,7 @@ config :veil, YourApp.Veil.Scheduler,
 
 config :veil, YourAppWeb.Veil.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
-  api_key: "SG.your-api-key"
+  api_key: "your-api-key"
 ```
 
 You should move the third part of this to a file that is not under version control, or save your API key as an environment variable instead.
