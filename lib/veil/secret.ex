@@ -1,4 +1,7 @@
 defmodule Veil.Secret do
+  @moduledoc """
+  An Agent for storing a secret used to generate unique request/session ids for Veil
+  """
   use Agent
 
   @doc """
