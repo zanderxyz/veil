@@ -11,7 +11,7 @@ mix phx.new your_app
 cd your_app
 ```
 
-2. Add `veil`` to your list of dependencies in `mix.exs`:
+2. Add `veil` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
