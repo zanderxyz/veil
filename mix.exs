@@ -12,7 +12,7 @@ defmodule Veil.MixProject do
       deps: deps(),
 
       # Hex
-      description: description(),
+      description: "Simple passwordless authentication for your Phoenix apps.",
       package: package(),
 
       # Docs
@@ -44,13 +44,6 @@ defmodule Veil.MixProject do
       {:phoenix_swoosh, "~> 0.2"},
       {:quantum, ">= 2.2.2"}
     ]
-  end
-
-  # Description for Hex
-  defp description do
-    """
-    Simple passwordless authentication for your Phoenix apps.
-    """
   end
 
   # These are the default files included in the package
