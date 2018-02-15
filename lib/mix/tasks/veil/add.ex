@@ -445,7 +445,11 @@ defmodule Mix.Tasks.Veil.Add do
     config
   end
 
-  defp show_router_instructions(%{web_module: web_module, web_path: web_path}) do
+  defp show_router_instructions(%{
+         main_module: main_module,
+         web_module: web_module,
+         web_path: web_path
+       }) do
     Mix.shell().info("""
     You will need to add the following to your #{web_path}/router.ex file manually.
 
@@ -470,7 +474,7 @@ defmodule Mix.Tasks.Veil.Add do
       # Alternatively, you can use the default block and authenticate in the controllers.
       # See the Veil README for more.
       scope "/", #{web_module} do
-        pipe_through([:browser, defmodule PhoenixExample.Veil do
+        pipe_through([:browser, defmodule #{main_module}.Veil do
       end
     """)
   end
