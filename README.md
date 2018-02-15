@@ -7,23 +7,23 @@ Simple passwordless authentication for your Phoenix apps.
 1. Create a new Phoenix project, and change to the working directory:
 
 ```shell
-mix phx.new your_app
-cd your_app
+$ mix phx.new your_app
+$ cd your_app
 ```
 
 2. Add `veil` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:veil, "~> 0.1.0"}]
+  [{:veil, "~> 0.1"}]
 end
 ```
 
 3. Fetch dependencies, and install Veil using the default task:
 
 ```shell
-mix deps.get
-mix veil.add
+$ mix deps.get
+$ mix veil.add
 ```
 
 4. Update the Veil configuration in your `config.exs` file to add an API key for your preferred email service (for more details on the email options, please refer to the [Swoosh Documentation](https://github.com/swoosh/swoosh)).
@@ -37,7 +37,7 @@ config :veil, YourAppWeb.Veil.Mailer,
 5. Launch your server and open http://localhost:4000/ in your browser.
 
 ```shell
-mix phx.server
+$ mix phx.server
 ```
 
 If you click the sign-in link in the top right and enter your email address, you'll be sent an email with a sign-in button. Click this to re-open the website and you'll see you are now authenticated.
@@ -70,7 +70,7 @@ You should move the third part of this to a file that is not under version contr
 
 ## Why Passwordless?
 
-Most users choose insecure passwords, and for most use cases it's safer and easier to have them click a link in an email to authenticate themselves. An added advantage is that the lack of a password prevents the website leaking user passwords in the event of a data breach/hack.
+Most users choose insecure passwords, and for most use cases it's safer and easier to have them click a link in an email to authenticate themselves. An added advantage is that the lack of a password prevents the website leaking user passwords in the event of a data breach/hack. Furthermore, if a website offers a password reset link it is effectively just a more clumsy version of authentication by email.
 
 The username/password paradigm is going to gradually die and the sooner the web can move past this for simple websites the better - Veil is my attempt to help speed this process up.
 
