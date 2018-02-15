@@ -12,7 +12,7 @@ defmodule <%= web_module %>.Plugs.Veil.Authenticate do
       conn
     else
       <%= if html? do %>
-      Phoenix.Controller.redirect(conn, to: PhoenixExampleWeb.Router.Helpers.user_path(conn, :new))
+      Phoenix.Controller.redirect(conn, to: <%= web_module %>.Router.Helpers.user_path(conn, :new))
       <% else %>
       Phoenix.Controller.render(conn, <%= web_module %>.Veil.ErrorView, :no_permission)
       <% end %>
