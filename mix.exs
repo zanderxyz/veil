@@ -1,7 +1,7 @@
 defmodule Veil.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.1"
 
   def project do
     [
