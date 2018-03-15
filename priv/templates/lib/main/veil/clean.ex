@@ -8,7 +8,7 @@ defmodule <%= main_module %>.Veil.Clean do
   @doc """
   Delete all expired requests and sessions
   """
-  def delete_expired do
+  def expired do
     Task.start(fn -> Veil.delete_expired_requests() end)
     Task.start(fn -> Veil.delete_expired_sessions() end)
   end
