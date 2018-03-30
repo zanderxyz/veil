@@ -29,7 +29,7 @@ defmodule Veil.Secure do
 
     secret = Secret.get()
 
-    concatenated = random_prefix <> client_ip <> user_agent <> system_time_ms <> secret
+    concatenated = random_prefix <> client_ip <> (user_agent || "") <> system_time_ms <> secret
     hashed = :crypto.hash(:sha256, concatenated)
     Base.encode32(hashed)
   end
