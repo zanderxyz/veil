@@ -42,7 +42,7 @@ defmodule Veil.MixProject do
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:swoosh, "~> 0.13"},
       {:phoenix_swoosh, "~> 0.2"},
-      {:quantum, ">= 2.2.2"}
+      {:quantum, "~> 2.2"}
     ]
   end
 
