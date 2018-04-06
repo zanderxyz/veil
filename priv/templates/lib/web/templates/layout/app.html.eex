@@ -1,7 +1,7 @@
 
-              <%= if veil_user_id = @conn.assigns[:veil_user_id] do %>
+              <%= if veil_user_id = assigns[:veil_user_id] do %>
                 Authenticated as <%= veil_user_id %>
-                <a href="<%= session_path(@conn, :delete, @conn.assigns[:session_unique_id]) %>">Sign out</a>
+                <a href="<%= session_path(@conn, :delete, @session_unique_id) %>">Sign out</a>
               <% else %>
                 <a href="<%= user_path(@conn, :new) %>">Sign in</a>
               <% end %>

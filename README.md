@@ -37,6 +37,7 @@ config :veil, YourAppWeb.Veil.Mailer,
 5. Launch your server and open http://localhost:4000/ in your browser.
 
 ```shell
+$ mix ecto.migrate
 $ mix phx.server
 ```
 
