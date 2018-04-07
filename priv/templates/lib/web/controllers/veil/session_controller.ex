@@ -16,7 +16,7 @@ defmodule <%= web_module %>.Veil.SessionController do
       Task.start(fn -> Veil.delete(request) end)
       <%= if html? do %>
       conn
-      |> put_resp_cookie(:session_unique_id, session.unique_id, max_age: 60*60*24*365)
+      |> put_resp_cookie("session_unique_id", session.unique_id, max_age: 60*60*24*365)
       |> redirect(to: page_path(conn, :index))
       <% else %>
       conn
@@ -35,7 +35,7 @@ defmodule <%= web_module %>.Veil.SessionController do
     with {:ok, _session} <- Veil.delete_session(session_unique_id) do
       <%= if html? do %>
       conn
-      |> put_resp_cookie(:session_unique_id, nil, max_age: 60*60*24*365)
+      |> put_resp_cookie("session_unique_id", nil, max_age: 60*60*24*365)
       |> redirect(to: user_path(conn, :new))
       <% else %>
       conn

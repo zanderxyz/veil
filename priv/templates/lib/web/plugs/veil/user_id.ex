@@ -11,7 +11,7 @@ defmodule <%= web_module %>.Plugs.Veil.UserId do
 
   <%= if html? do %>
   def call(conn, _opts) do
-    with session_unique_id <- conn.cookies[:session_unique_id],
+    with session_unique_id <- conn.cookies["session_unique_id"],
          {:ok, session} <- Veil.get_session(session_unique_id),
   <% else %>
   def call(%Plug.Conn{params: %{"session_id" => session_unique_id}} = conn, _opts) do
