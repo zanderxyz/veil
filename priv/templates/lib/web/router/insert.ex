@@ -14,7 +14,6 @@
     get("/sessions/signout/:session_id", SessionController, :delete)
     <% else %>
     post("/sessions/new", SessionController, :create)
-    get("/sessions/new/:request_id", SessionController, :create)
     delete("/sessions/signout", SessionController, :delete)
     <% end %>
   end

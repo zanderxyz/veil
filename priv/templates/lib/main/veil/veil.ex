@@ -59,7 +59,11 @@ defmodule <%= main_module %>.Veil do
 
   defp new_session_url(conn, unique_id) do
     cur_uri = Phoenix.Controller.endpoint_module(conn).struct_url()
+    if html? do
     cur_path = <%= web_module %>.Router.Helpers.session_path(conn, :create, unique_id)
+    else
+    cur_path = <%= web_module %>.Router.Helpers.session_path(conn, :create, [request_id: unique_id])
+    end
     <%= web_module %>.Router.Helpers.url(cur_uri) <> cur_path
   end
 
