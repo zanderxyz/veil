@@ -7,7 +7,7 @@ config :veil,
   session_expiry: 86_400 * 30,
   refresh_expiry_interval: 86_400
 
-config :veil,Veil.Scheduler,
+config :veil, Veil.Scheduler,
   jobs: [
     # Runs every midnight to delete all expired requests and sessions
     {"@daily", {<%= main_module %>.Veil.Clean, :expired, []}}
