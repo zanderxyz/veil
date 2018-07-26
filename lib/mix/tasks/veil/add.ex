@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Veil.Add do
   use Mix.Task
+  require IEx
 
   @shortdoc "Add simple passwordless authentication using Veil to your Phoenix app"
 
@@ -278,39 +279,46 @@ defmodule Mix.Tasks.Veil.Add do
   def amend_default_template(%{layout_path: layout_path, web_path: web_path} = config) do
     layout_source = source_path(Path.join(["lib", "web", "templates", "layout", "app.html.eex"]))
 
-    if File.exists?(layout_path) and File.exists?(layout_source) do
-      previous = File.read!(layout_path)
-      layout_data = File.read!(layout_source)
+    config =
+      if File.exists?(layout_path) and File.exists?(layout_source) do
+        previous = File.read!(layout_path)
+        layout_data = File.read!(layout_source)
 
-      to_replace = "<a href=\"http://www.phoenixframework.org/docs\">Get Started</a>"
+        to_replace = "<a href=\"http://www.phoenixframework.org/docs\">Get Started</a>"
 
-      if String.contains?(previous, to_replace) do
-        File.write!(layout_path, String.replace(previous, to_replace, layout_data))
+        if String.contains?(previous, to_replace) do
+          File.write!(layout_path, String.replace(previous, to_replace, layout_data))
 
-        Mix.shell().info([
-          :yellow,
-          "* amended ",
-          :reset,
-          "#{web_path}/templates/layout/app.html.eex - added sign-in link"
-        ])
+          Mix.shell().info([
+            :yellow,
+            "* amended ",
+            :reset,
+            "#{web_path}/templates/layout/app.html.eex - added sign-in link"
+          ])
+
+          Map.put(config, :non_default_layout, false)
+        else
+          Mix.shell().info([
+            :yellow,
+            "* skipping ",
+            :reset,
+            "#{web_path}/templates/layout/app.html.eex - already customised"
+          ])
+
+          Map.put(config, :non_default_layout, true)
+        end
       else
-        Mix.shell().info([
-          :yellow,
-          "* skipping ",
-          :reset,
-          "#{web_path}/templates/layout/app.html.eex - already customised"
-        ])
+        if config[:html?] do
+          Mix.shell().info([
+            :yellow,
+            "* skipping ",
+            :reset,
+            "#{web_path}/templates/layout/app.html.eex - no longer exists"
+          ])
+
+          Map.put(config, :non_default_layout, true)
+        end
       end
-    else
-      if config[:html?] do
-        Mix.shell().info([
-          :yellow,
-          "* skipping ",
-          :reset,
-          "#{web_path}/templates/layout/app.html.eex - no longer exists"
-        ])
-      end
-    end
 
     config
   end
@@ -410,6 +418,7 @@ defmodule Mix.Tasks.Veil.Add do
 
   defp show_final_instructions(config) do
     config
+    |> show_link_instructions()
     |> show_config_instructions()
     |> show_start_instructions()
   end
@@ -478,4 +487,25 @@ defmodule Mix.Tasks.Veil.Add do
       end
     """)
   end
+
+  defp show_link_instructions(%{non_default_layout: true} = config) do
+    Mix.shell().info("""
+
+    If your default layout page (`templates/layout/app.html.eex`) was already
+    modified or replaced, e.g. you see
+    `* skipping lib/sunrise_web/templates/layout/app.html.eex`
+    above then you'll need to manually add link markup similar to this:
+
+      <%= if veil_user_id = assigns[:veil_user_id] do %>
+        Authenticated as <%= veil_user_id %>
+        <a href="<%= session_path(@conn, :delete, @session_unique_id) %>">Sign out</a>
+      <% else %>
+        <a href="<%= user_path(@conn, :new) %>">Sign in</a>
+      <% end %>
+    """)
+
+    config
+  end
+
+  defp show_link_instructions(config), do: config
 end
