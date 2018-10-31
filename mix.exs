@@ -39,7 +39,7 @@ defmodule Veil.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:ex_doc, "~> 0.19", only: :dev},
       {:swoosh, "~> 0.13"},
       {:phoenix_swoosh, "~> 0.2"},
       {:quantum, "~> 2.3"},
