@@ -3,7 +3,6 @@ defmodule <%= web_module %>.Plugs.Veil.Authenticate do
   A plug to restrict access to logged in users
   We simply check to see if the user has the :veil_user_id assign set
   """
-  import Plug.Conn
 
   def init(default), do: default
 

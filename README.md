@@ -15,7 +15,7 @@ $ cd your_app
 
 ```elixir
 def deps do
-  [{:veil, "~> 0.1"}]
+  [{:veil, "~> 0.2"}]
 end
 ```
 
@@ -52,9 +52,12 @@ config :veil,
   site_name: "Your Website Name",
   email_from_name: "Your Name",
   email_from_address: "yourname@example.com",
-  sign_in_link_expiry: 3_600,
-  session_expiry: 86_400 * 30,
-  refresh_expiry_interval: 86_400
+  sign_in_link_expiry: 12 * 3_600, # How long should emailed sign-in links be valid for?
+  session_expiry: 86_400 * 30, # How long should sessions be valid for?
+  refresh_expiry_interval: 86_400,  # How often should existing sessions be extended to session_expiry
+  sessions_cache_limit: 250, # How many recent sessions to keep in cache (to reduce database operations)
+  users_cache_limit: 100 # How many recent users to keep in cache
+
 
 config :veil, YourApp.Veil.Scheduler,
   jobs: [
@@ -79,7 +82,7 @@ The username/password paradigm is going to gradually die and the sooner the web 
 
 Virtually all of Veil's code is copied directly into your project when you run `mix veil.add`, so you can customise it to your heart's content.
 
-By default `Plugs.Veil.UserId` is added to your default Router paths, which assigns the client's user_id to `conn.assigns[:veil_user_id]`. If you extend the `Veil.User` schema, you may want to add `Plugs.Veil.User` as well, which will assign the full `Veil.User` struct to `conn.assigns[:veil_user]`.
+By default `Plugs.Veil.UserId` is added to your default Router paths, which assigns the client's user_id to `conn.assigns[:veil_user_id]`. Additionally `Plugs.Veil.User` is also added, and assigns the full `Veil.User` struct to `conn.assigns[:veil_user]`. `Veil.User` objects are cached so this doesn't require database requests each time. You can easily extend the `Veil.User` struct to add additional fields, just make sure you use the `Veil.update_user` function to make any updates, so that these are also updated in the cache.
 
 Authentication can either be handled using scopes in the Router, or in your Controllers. On adding Veil to your project, it adds the following block to your Router. Paths in this block will only be accessible to logged in users.
 
@@ -113,7 +116,7 @@ The sign-in/auth process works as follows:
 
 2. An email is then sent to the user with a sign-in link. The email and website response is identical whether or not they previously had an account - this is to avoid leaking information to attackers.
 
-3. The link contains a Base32 encoded request id that is stored in a database by the server. When the user clicks the link, the server checks in the database to find out which user made the request, and how long it has been since they first tried to sign-in (default sign\_in\_link_expiry is 1 hour).
+3. The link contains a Base32 encoded request id that is stored in a database by the server. When the user clicks the link, the server checks in the database to find out which user made the request, and how long it has been since they first tried to sign-in (default sign\_in\_link_expiry is 12 hours).
 
 4. If the link hasn't expired, a new session is created for the user along with a new Base32 encoded session id, and this is saved to a cookie. The browser sends the session id to the server for each web request, and the server checks it hasn't expired. If it is older than the refresh\_expiry\_interval (default 1 day), then the session is extended until the session_expiry (default 30 days).
 
@@ -158,7 +161,7 @@ Any thoughts on how this could be easily extended to work better for APIs out-of
 
 ## But I need something more full-featured!
 
-Use [Coherence](https://github.com/smpallen99/coherence) or [Guardian](https://github.com/ueberauth/guardian).
+Use [Pow](https://github.com/danschultzer/pow), [Coherence](https://github.com/smpallen99/coherence) or [Guardian](https://github.com/ueberauth/guardian).
 
 ## License
 

@@ -337,8 +337,14 @@ defmodule Mix.Tasks.Veil.Add do
           """
           plug :put_secure_browser_headers
           plug #{web_module}.Plugs.Veil.UserId
+          plug #{web_module}.Plugs.Veil.User
           """,
-          [:yellow, "* amended ", :reset, "#{router_path} - UserId plug added to html pipeline"]
+          [
+            :yellow,
+            "* amended ",
+            :reset,
+            "#{router_path} - UserId & User plugs added to html pipeline"
+          ]
         )
         |> update_string(
           config[:html?],
@@ -346,8 +352,14 @@ defmodule Mix.Tasks.Veil.Add do
           """
           plug(:put_secure_browser_headers)
           plug(#{web_module}.Plugs.Veil.UserId)
+          plug(#{web_module}.Plugs.Veil.User)
           """,
-          [:yellow, "* amended ", :reset, "#{router_path} - UserId plug added to html pipeline"]
+          [
+            :yellow,
+            "* amended ",
+            :reset,
+            "#{router_path} - UserId & User plugs added to html pipeline"
+          ]
         )
         |> update_string(
           !config[:html?],
@@ -355,8 +367,14 @@ defmodule Mix.Tasks.Veil.Add do
           """
           plug :accepts, ["json"]
           plug #{web_module}.Plugs.Veil.UserId
+          plug #{web_module}.Plugs.Veil.User
           """,
-          [:yellow, "* amended ", :reset, "#{router_path} - UserId plug added to api pipeline"]
+          [
+            :yellow,
+            "* amended ",
+            :reset,
+            "#{router_path} - UserId & User plugs added to api pipeline"
+          ]
         )
         |> update_string(
           !config[:html?],
@@ -364,8 +382,14 @@ defmodule Mix.Tasks.Veil.Add do
           """
           plug(:accepts, ["json"])
           plug(#{web_module}.Plugs.Veil.UserId)
+          plug(#{web_module}.Plugs.Veil.User)
           """,
-          [:yellow, "* amended ", :reset, "#{router_path} - UserId plug added to api pipeline"]
+          [
+            :yellow,
+            "* amended ",
+            :reset,
+            "#{router_path} - UserId & User plugs added to api pipeline"
+          ]
         )
         |> insert_routes(config)
 
@@ -445,6 +469,7 @@ defmodule Mix.Tasks.Veil.Add do
     Launch your server and open http://localhost:4000/ in your browser.
 
       mix phx.server
+      mix ecto.migrate
 
     If you click the sign-in link in the top right and enter your email address, you'll be
     sent an email with a sign-in button. Click this to re-open the website and you'll see

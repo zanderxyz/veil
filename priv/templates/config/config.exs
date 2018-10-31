@@ -3,9 +3,11 @@ config :veil,
   site_name: "Your Website Name",
   email_from_name: "Your Name",
   email_from_address: "yourname@example.com",
-  sign_in_link_expiry: 3_600,
-  session_expiry: 86_400 * 30,
-  refresh_expiry_interval: 86_400
+  sign_in_link_expiry: 12 * 3_600, # How long should emailed sign-in links be valid for?
+  session_expiry: 86_400 * 30, # How long should sessions be valid for?
+  refresh_expiry_interval: 86_400,  # How often should existing sessions be extended to session_expiry
+  sessions_cache_limit: 250, # How many recent sessions to keep in cache (to reduce database operations)
+  users_cache_limit: 100 # How many recent users to keep in cache
 
 config :veil, Veil.Scheduler,
   jobs: [

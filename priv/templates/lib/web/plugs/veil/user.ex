@@ -1,7 +1,6 @@
 defmodule <%= web_module %>.Plugs.Veil.User do
   @moduledoc """
   A plug to assign the Veil.User struct to the connection.
-  Not used by default, but useful if you have extended the Veil.User struct
   """
   require Logger
   import Plug.Conn

@@ -5,7 +5,7 @@ defmodule <%= main_module %>.Veil do
   alias <%= main_module %>.Repo
   alias <%= main_module %>.Veil.{User, Request, Session}
   alias <%= web_module %>.Veil.{Mailer, LoginEmail}
-  alias Veil.Secure
+  alias Veil.{Cache, Secure}
 
   # These are only used to sign request/session tokens that are saved in the database and
   # not sent to users.
@@ -16,6 +16,10 @@ defmodule <%= main_module %>.Veil do
   Gets user associated with user_id
   """
   def get_user(user_id) do
+    Cache.get_or_update(:veil_users, user_id, &get_user_repo/1)
+  end
+
+  defp get_user_repo(user_id) do
     Repo.get(User, user_id)
   end
 
@@ -32,20 +36,40 @@ defmodule <%= main_module %>.Veil do
   def create_user(email) do
     %User{}
     |> User.changeset(%{email: email})
-    |> Repo.insert()
+    |> Cache.put(:veil_users, &Repo.insert/1)
   end
 
   @doc """
   Sets verified flag on the user associated with the user_id given, if needed
   """
-  def verify_user(user_id) do
-    if user = get_user(user_id) do
-      unless user.verified do
-        user
-        |> User.changeset(%{verified: true})
-        |> Repo.update()
-      end
+  def verify_user(%User{} = user) do
+    if not user.verified and not is_nil(user.email) do
+      update_user(user, %{verified: true})
+    else
+      {:ok, user}
     end
+  end
+
+  def verify_user(user_id) do
+    with {:ok, user} <- get_user(user_id) do
+      verify_user(user)
+    else
+      error -> error
+    end
+  end
+
+  def update_user(%User{} = user, attrs) do
+    with {:ok, user} <- do_update_user(user, attrs) do
+      {:ok, user}
+    else
+      error -> error
+    end
+  end
+
+  defp do_update_user(%User{} = user, attrs) do
+    user
+    |> User.changeset(attrs)
+    |> Cache.put(:veil_users, &Repo.update/1)
   end
 
   @doc """
@@ -127,7 +151,7 @@ defmodule <%= main_module %>.Veil do
       unique_id: Secure.generate_unique_id(conn),
       ip_address: Secure.get_user_ip(conn)
     })
-    |> Repo.insert()
+    |> Cache.put(:veil_sessions, &Repo.insert/1, & &1.unique_id)
   end
 
   defp create_session_token(conn, user_id) do
@@ -140,10 +164,19 @@ defmodule <%= main_module %>.Veil do
   def get_session(nil), do: {:error, :no_permission}
 
   def get_session(unique_id) do
-    if session = Repo.get_by(Session, unique_id: unique_id) do
-      {:ok, session}
+    with {:ok, session} <- Cache.get_and_refresh(:veil_sessions, unique_id) do
+      unless is_nil(session) do
+        {:ok, session}
+      else
+        if session = Repo.get_by(Session, unique_id: unique_id) do
+          Cachex.put(:veil_sessions, unique_id, session)
+          {:ok, session}
+        else
+          {:error, :no_session_found}
+        end
+      end
     else
-      {:error, :no_permission}
+      error -> error
     end
   end
 
@@ -158,7 +191,7 @@ defmodule <%= main_module %>.Veil do
       {:error, :expired} ->
         session
         |> Session.changeset(%{phoenix_token: create_session_token(conn, user_id)})
-        |> Repo.update()
+        |> Cache.put(:veil_sessions, &Repo.update/1, & &1.unique_id)
 
       _ ->
         nil
@@ -173,6 +206,7 @@ defmodule <%= main_module %>.Veil do
   Deletes the request/session
   """
   def delete(%Session{} = session) do
+    Cachex.del(:veil_sessions, session.unique_id)
     Repo.delete(session)
   end
 

@@ -32,7 +32,8 @@ defmodule <%= web_module %>.Veil.SessionController do
   Deletes an existing session and logs the user out.
   """
   def delete(conn, %{"session_id" => session_unique_id}) do
-    with {:ok, _session} <- Veil.delete_session(session_unique_id) do
+    with {:ok, _del} <- Cachex.del(:veil_sessions, session_unique_id),
+         {:ok, _session} <- Veil.delete_session(session_unique_id) do
       <%= if html? do %>
       conn
       |> delete_resp_cookie("session_unique_id", max_age: 60*60*24*365)
