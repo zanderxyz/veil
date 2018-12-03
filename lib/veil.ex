@@ -10,7 +10,6 @@ defmodule Veil do
     import Cachex.Spec
 
     children = [
-      worker(Veil.Scheduler, []),
       worker(Veil.Secret, []),
       %{
         id: :veil_sessions,
@@ -43,6 +42,16 @@ defmodule Veil do
     ]
 
     opts = [strategy: :one_for_one, name: Veil.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(add_scheduler(children), opts)
+  end
+
+  defp add_scheduler(children) do
+    import Supervisor.Spec, only: [worker: 2]
+
+    if Application.get_env(:veil, :environment) != :test do
+      [worker(Veil.Scheduler, []) | children]
+    else
+      children
+    end
   end
 end
