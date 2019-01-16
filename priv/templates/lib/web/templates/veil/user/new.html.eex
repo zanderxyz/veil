@@ -1,3 +1,3 @@
 <h2>Sign In</h2>
 
-<%%= render "form.html", changeset: @changeset, action: user_path(@conn, :create) %>
+<%%= render "form.html", changeset: @changeset, action: Routes.user_path(@conn, :create) %>

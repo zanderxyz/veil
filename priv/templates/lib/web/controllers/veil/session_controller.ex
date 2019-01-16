@@ -17,7 +17,7 @@ defmodule <%= web_module %>.Veil.SessionController do
       <%= if html? do %>
       conn
       |> put_resp_cookie("session_unique_id", session.unique_id, max_age: 60*60*24*365)
-      |> redirect(to: page_path(conn, :index))
+      |> redirect(to: Routes.page_path(conn, :index))
       <% else %>
       conn
       |> render("show.json", session: session)
@@ -37,7 +37,7 @@ defmodule <%= web_module %>.Veil.SessionController do
       <%= if html? do %>
       conn
       |> delete_resp_cookie("session_unique_id", max_age: 60*60*24*365)
-      |> redirect(to: user_path(conn, :new))
+      |> redirect(to: Routes.user_path(conn, :new))
       <% else %>
       conn
       |> render("ok.json")

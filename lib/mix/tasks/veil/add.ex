@@ -284,7 +284,7 @@ defmodule Mix.Tasks.Veil.Add do
         previous = File.read!(layout_path)
         layout_data = File.read!(layout_source)
 
-        to_replace = "<a href=\"http://www.phoenixframework.org/docs\">Get Started</a>"
+        to_replace = "<a href=\"https://hexdocs.pm/phoenix/overview.html\">Get Started</a>"
 
         if String.contains?(previous, to_replace) do
           File.write!(layout_path, String.replace(previous, to_replace, layout_data))
