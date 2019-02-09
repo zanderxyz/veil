@@ -10,7 +10,8 @@ defmodule <%= web_module %>.Plugs.Veil.User do
 
   def call(conn, _opts) do
     if veil_user_id = conn.assigns[:veil_user_id] do
-      assign(conn, :veil_user, Veil.get_user(veil_user_id))
+      {:ok, veil_user} = Veil.get_user(veil_user_id)
+      assign(conn, :veil_user, veil_user)
     else
       conn
     end
