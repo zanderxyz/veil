@@ -15,7 +15,7 @@ defmodule <%= web_module %>.Plugs.Veil.UserId do
     with session_unique_id <- conn.cookies["session_unique_id"],
   <% else %>
   def call(conn, _opts) do
-    with [session_unique_id|_] = get_req_header(conn, "session_unique_id"),
+    with [session_unique_id|_] <- get_req_header(conn, "session_unique_id"),
   <% end %>
          {:ok, session} <- Veil.get_session(session_unique_id),
          {:ok, user_id} <- Veil.verify(conn, session),
