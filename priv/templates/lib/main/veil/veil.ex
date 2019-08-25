@@ -164,7 +164,7 @@ defmodule <%= main_module %>.Veil do
   def get_session(nil), do: {:error, :no_permission}
 
   def get_session(unique_id) do
-    with {:ok, session} <- Cache.get_and_refresh(:veil_sessions, unique_id) do
+    with {:ok, {:ok, session}} <- Cache.get_and_refresh(:veil_sessions, unique_id) do
       unless is_nil(session) do
         {:ok, session}
       else
