@@ -11,18 +11,26 @@ defmodule <%= web_module %>.Veil.FallbackController do
   def call(conn, {:error, {:closed, ""}}) do
     Logger.error(fn -> "[Veil] Invalid Swoosh api key, update your config.exs" end)
     <%= if html? do %>
-    render(conn, <%= web_module %>.Veil.UserView, "new.html", changeset: User.changeset(%User{}))
+    conn
+    |> put_view(<%= web_module %>.Veil.UserView)
+    |> render("new.html", changeset: User.changeset(%User{}))
     <% else %>
-    render(conn, <%= web_module %>.Veil.ErrorView, :invalid_mail_api_key)
+    conn
+    |> put_view(<%= web_module %>.Veil.ErrorView)
+    |> render(:invalid_mail_api_key)
     <% end %>
   end
 
   def call(conn, {:error, :no_permission}) do
     Logger.error(fn -> "[Veil] Invalid Request or Session" end)
     <%= if html? do %>
-    render(conn, <%= web_module %>.Veil.UserView, "new.html", changeset: User.changeset(%User{}))
+    conn
+    |> put_view(<%= web_module %>.Veil.UserView)
+    |> render("new.html", changeset: User.changeset(%User{}))
     <% else %>
-    render(conn, <%= web_module %>.Veil.ErrorView, :no_permission)
+    conn
+    |> put_view(<%= web_module %>.Veil.ErrorView)
+    |> render(:no_permission)
     <% end %>
   end
 end
